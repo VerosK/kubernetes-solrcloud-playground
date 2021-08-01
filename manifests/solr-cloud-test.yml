@@ -1,0 +1,19 @@
+apiVersion: solr.apache.org/v1beta1
+kind: SolrCloud
+metadata:
+  name: test
+spec:
+  replicas: 3
+  solrImage:
+    tag: "8.3"
+  solrJavaMem: "-Xms300m -Xmx300m"
+  solrAddressability:
+    external:
+      method: Ingress
+      domainName: "minikube"
+      useExternalAddress: true
+
+  customSolrKubeOptions:
+    ingressOptions:
+      annotations:
+        'nginx.ingress.kubernetes.io/default-backend': test-solrcloud-common
