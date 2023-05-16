@@ -3,10 +3,12 @@
 export KUBECONFIG=$(pwd)/kubeconfig
 touch $KUBECONFIG
 
+set -e
+set -x
+
 export MINIKUBE_IN_STYLE=true
 
 # Start minikube
-minikube start --memory=10240M --cpus=2 --disk-size=20gb
 
 # wait for kubernetes master start
 minikube addons enable default-storageclass
@@ -15,14 +17,16 @@ minikube addons enable storage-provisioner
 
 # create CRDs
 echo "=== Create SolrCloud CRDs"
-kubectl create -f manifests/all-with-dependencies.yaml
+kubectl create -f https://solr.apache.org/operator/downloads/crds/v0.7.0/all-with-dependencies.yaml
 
-kubectl create namespace solr-operator
+helm repo add apache-solr https://solr.apache.org/charts
+helm repo update apache-solr
+
 
 # create manifests/solr-operator.yml
 if [ ! -f manifests/solr-operator.yml ]; then
   # this can be skiiped
-  helm template solr-operator apache-solr/solr-operator  --version 0.3.0 --namespace solr-operator > manifests/solr-operator.yml
+  helm template solr-operator apache-solr/solr-operator  --version 0.7.0 --namespace solr-operator > manifests/solr-operator.yml
 fi
 
 # deploy solr operator

@@ -2,17 +2,17 @@ apiVersion: solr.apache.org/v1beta1
 kind: SolrCloud
 metadata:
   name: test
+  namespace: default
 spec:
-  replicas: 3
+  replicas: 5
   solrImage:
     tag: "8.3"
-  solrJavaMem: "-Xms300m -Xmx300m"
+  solrJavaMem: "-Xms500m -Xmx500m"
   solrAddressability:
     external:
       method: Ingress
       domainName: "minikube"
       useExternalAddress: true
-
   customSolrKubeOptions:
     ingressOptions:
       annotations:
